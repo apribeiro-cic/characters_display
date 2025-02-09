@@ -35,7 +35,7 @@ pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(characters_display characters_display.c )
+add_executable(characters_display characters_display.c lib/ssd1306.c)
 
 pico_set_program_name(characters_display "characters_display")
 pico_set_program_version(characters_display "0.1")
@@ -44,9 +44,15 @@ pico_set_program_version(characters_display "0.1")
 pico_enable_stdio_uart(characters_display 1)
 pico_enable_stdio_usb(characters_display 1)
 
+pico_generate_pio_header(characters_display ${CMAKE_CURRENT_LIST_DIR}/characters_display.pio)
+
+target_sources(characters_display PRIVATE characters_display.c)
+
 # Add the standard library to the build
 target_link_libraries(characters_display
-        pico_stdlib)
+        pico_stdlib
+        hardware_pio
+        )
 
 # Add the standard include files to the build
 target_include_directories(characters_display PRIVATE
@@ -55,7 +61,7 @@ target_include_directories(characters_display PRIVATE
 
 # Add any user requested libraries
 target_link_libraries(characters_display 
-        
+        hardware_i2c
         )
 
 pico_add_extra_outputs(characters_display)
